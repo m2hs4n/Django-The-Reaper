@@ -1,0 +1,36 @@
+volumes:
+  postgres_production_data: {}
+  postgres_production_data_backups: {}
+
+  django_production_media: {}  
+
+
+services:
+  postgres:
+    container_name: production_postgres_db
+    image: postgres:16
+    volumes:
+      - postgres_production_data:/var/lib/postgresql/data
+      - postgres_production_data_backups:/backups
+    env_file:
+      - ./envs/production/.env
+    ports:
+      - 5432:5432
+
+  
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/production/Dockerfile
+
+    image: django_production
+    container_name: django_production_container
+    volumes:
+      - django_production_media:/app/media
+    depends_on:
+      - postgres
+    env_file:
+      - ./envs/production/.env
+    ports:
+      - 8000:8000
+    # command: /entrypoint.sh
