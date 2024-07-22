@@ -1,0 +1,37 @@
+volumes:
+  postgres_develop_data: {}
+  postgres_develop_data_backups: {}
+
+  django_develop_media: {}  
+
+
+services:
+  postgres:
+    container_name: develop_postgres_db
+    image: postgres:latest
+    volumes:
+      - postgres_develop_data:/var/lib/postgresql/data
+      - postgres_develop_data_backups:/backups
+    env_file:
+      - ./envs/develop/.env
+    ports:
+      - 5432:5432
+
+  
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/develop/Dockerfile
+
+    image: django_develop
+    container_name: django_develop_container
+    volumes:
+      - django_develop_media:/app/media
+      - ./:/app
+    depends_on:
+      - postgres
+    env_file:
+      - ./envs/develop/.env
+    ports:
+      - 8000:8000
+    
