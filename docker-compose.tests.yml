@@ -1,0 +1,43 @@
+volumes:
+  postgres_data_test: {}
+  postgres_data_backups_test: {}
+  django_media_test: {}
+
+
+services:
+  postgres:
+    container_name: postgres_db_test
+    image: postgres:16
+    volumes:
+      - postgres_data_test:/var/lib/postgresql/data
+      - postgres_data_backups_test:/backups
+    env_file:
+      - ./envs/develop/.env
+    ports:
+      - 5432:5432
+
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/production/Dockerfile
+
+    image: django_tests_image
+    container_name: django_tests_container
+    volumes:
+      - django_media_test:/app/media
+      - ./:/app
+    depends_on:
+      - postgres
+    env_file:
+      - ./envs/production/.env
+    ports:
+      - 8000:8000
+  
+  test:
+    <<: *django
+    image: tests_image
+    container_name: tests_image_container
+    depends_on:
+      - postgres
+    ports: []
+    command: /start-test.sh
