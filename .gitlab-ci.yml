@@ -1,0 +1,24 @@
+stages:
+    - clone
+    - test
+    - deploy
+
+before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+clone:
+  stage: clone
+  script:
+    - git clone https://github.com/f4js/charity.git
+
+test:
+  stage: test
+  script:
+      - docker-compose -f docker-compose.tests.yml up --build -d
+      - docker-compose -f docker-compose.tests.yml down
+
+deploy:
+  stage: deploy
+  script:
+      - sudo docker compose -f docker-compose.production.yml pull
+      - sudo docker compose -f docker-compose.production.yml up --build -d
