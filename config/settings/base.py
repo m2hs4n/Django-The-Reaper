@@ -25,6 +25,7 @@ THIRD_PARTY_APPS = [
 
 # Local apps
 LOCAL_APPS = [
+    "apps.example.apps.ExampleConfig",
 ]
 
 # Merge all apps
