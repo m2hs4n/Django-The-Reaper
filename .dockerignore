@@ -1,0 +1,25 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment files
+.env
+envs/*/.env
+
+# Development and production docker-compose files
+docker-compose.*.yml
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*~
+*.bak
+*.tmp
+
+# logs
+*.log
+*.db
+*.sqlite3
+
